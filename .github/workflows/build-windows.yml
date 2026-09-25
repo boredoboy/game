@@ -59,12 +59,16 @@ jobs:
             Get-ChildItem -Force -Recurse $env:PROJECT_DIR | Select-Object FullName,Length | Format-Table -AutoSize
             throw "Godot returned success but did not create $exe."
           }
-          Get-Item -LiteralPath $exe | Select-Object FullName,Length | Format-List
+          $pck = Join-Path $buildDir "DeadRadio.pck"
+          if (-not (Test-Path -LiteralPath $pck -PathType Leaf)) { throw "Godot did not create the external game data file $pck." }
+          Get-Item -LiteralPath $exe,$pck | Select-Object FullName,Length | Format-Table -AutoSize
 
       - name: Upload playable build
         uses: actions/upload-artifact@v4
         with:
           name: DeadRadio-Windows-x86_64
-          path: ${{ env.PROJECT_DIR }}/build/DeadRadio.exe
+          path: |
+            ${{ env.PROJECT_DIR }}/build/DeadRadio.exe
+            ${{ env.PROJECT_DIR }}/build/DeadRadio.pck
           if-no-files-found: error
           retention-days: 30

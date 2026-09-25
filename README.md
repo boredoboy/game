@@ -6,9 +6,11 @@
 
 1. Установите Godot 4.7.2 Standard и откройте `project.godot`.
 2. Нажмите F6/F5 в редакторе для запуска.
-3. Локальный экспорт: **Project → Export → Windows Desktop**.
+3. Локальный экспорт: **Project → Export → Windows Desktop**. Пресет собирает 32-битную версию для старых процессоров без SSE4.2; используется Compatibility-рендерер.
 
-Для GitHub Actions создайте репозиторий так, чтобы `project.godot` и папка `.github` из этого проекта находились в корне репозитория, затем отправьте изменения в `main` или `master`. Windows-сборка запускается на push/pull request. Для ручной сборки откройте вкладку **Actions → Build Windows game → Run workflow**. Скачайте и распакуйте артефакт: запускайте `DeadRadio.exe`, оставив рядом файл `DeadRadio.pck`.
+Для GitHub Actions создайте репозиторий так, чтобы `project.godot` и папка `.github` из этого проекта находились в корне репозитория, затем отправьте изменения в `main` или `master`. Windows-сборка запускается на push/pull request. Для ручной сборки откройте вкладку **Actions → Build Windows game → Run workflow**. Скачайте и распакуйте артефакт `DeadRadio-Windows-x86_32`: запускайте `DeadRadio-x86.exe`, оставив рядом файл `DeadRadio-x86.pck`.
+
+Рендерер Compatibility и стартовые настройки 1280×720 / низкое качество теней рассчитаны на старые встроенные видеокарты. Быстродействие зависит от драйвера и конкретного ПК.
 
 ## Управление
 

@@ -13,7 +13,7 @@ flowchart TD
     GameManager[Глобальный счёт и волна] --> HUD
     GameSettings[Сохранённые настройки] --> Menu
     GameSettings --> Arena
-    Actions[GitHub Actions] -->|Windows x86_64| Exe[DeadRadio.exe artifact]
+    Actions[GitHub Actions] -->|Windows x86_32 / SSE2| Exe[DeadRadio-x86.exe + PCK]
 ```
 
 ## Слои
@@ -23,4 +23,4 @@ flowchart TD
 - **Персонажи и оружие:** `anime_survivor.gd` создаёт стилизованные 3D-модели; `rifle.tscn` и `rifle.gd` изолируют вид оружия, отдачу и вспышку.
 - **Автозагрузки:** `GameManager` хранит счёт/убийства/волну; `GameSettings` сохраняет звук, разрешение, режим окна, VSync и чувствительность в `user://dead_radio_settings.cfg`.
 - **Контент:** WAV/PNG хранятся в `assets/audio/packs/` и `assets/textures/packs/`; игра не загружает ресурсы из сети.
-- **Сборка:** `.github/workflows/build-windows.yml` импортирует ресурсы, экспортирует preset `Windows Desktop` и публикует `.exe` как Actions artifact.
+- **Сборка:** `.github/workflows/build-windows.yml` импортирует ресурсы, экспортирует 32-битный Windows preset для старых CPU и публикует `.exe` вместе с `.pck` как Actions artifact. Рендерер Compatibility рассчитан на старые видеокарты.

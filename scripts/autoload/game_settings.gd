@@ -11,8 +11,8 @@ var values := {
 	"mouse_sensitivity": 0.14,
 	"fullscreen": false,
 	"vsync": true,
-	"resolution": "1600x900",
-	"quality": "Высокое"
+	"resolution": "1280x720",
+	"quality": "Низкое"
 }
 
 func _ready() -> void:

@@ -42,19 +42,21 @@ jobs:
         run: |
           $buildDir = Join-Path $env:PROJECT_DIR "build"
           New-Item -ItemType Directory -Force $buildDir | Out-Null
-          godot --headless --path "$env:PROJECT_DIR" --export-release "Windows Desktop" (Join-Path $buildDir "DeadRadio.exe")
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $exe = Join-Path $buildDir "DeadRadio.exe"
-          if (-not (Test-Path $exe)) {
+          Write-Output "Exporting Windows build to $exe"
+          & godot --headless --path "$env:PROJECT_DIR" --export-release "Windows Desktop" $exe
+          $godotExitCode = $LASTEXITCODE
+          if ($null -ne $godotExitCode -and $godotExitCode -ne 0) { exit $godotExitCode }
+          if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) {
             Get-ChildItem -Force -Recurse $env:PROJECT_DIR | Select-Object FullName,Length | Format-Table -AutoSize
             throw "Godot returned success but did not create $exe."
           }
-          Get-ChildItem $buildDir | Select-Object Name,Length | Format-Table -AutoSize
+          Get-Item -LiteralPath $exe | Select-Object FullName,Length | Format-List
 
       - name: Upload playable build
         uses: actions/upload-artifact@v4
         with:
           name: DeadRadio-Windows-x86_64
-          path: ${{ env.PROJECT_DIR }}/build/DeadRadio.*
+          path: ${{ env.PROJECT_DIR }}/build/DeadRadio.exe
           if-no-files-found: error
           retention-days: 30

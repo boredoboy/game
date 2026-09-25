@@ -1,6 +1,7 @@
 extends Control
 
 const GAME_SCENE := "res://scenes/levels/arena.tscn"
+const FOREST_SCENE := "res://scenes/levels/dark_forest.tscn"
 const BACKDROP_SCRIPT := preload("res://scripts/ui/menu_backdrop.gd")
 const UI_CONFIRM := preload("res://assets/audio/packs/core_sfx/ui/menu_confirm.wav")
 const UI_HOVER := preload("res://assets/audio/packs/core_sfx/ui/menu_hover.wav")
@@ -90,10 +91,14 @@ func _build_ui() -> void:
 	var gap := Control.new()
 	gap.custom_minimum_size.y = 45
 	layout.add_child(gap)
-	var start := _menu_button("НАЧАТЬ ЗАБЕГ", true)
+	var start := _menu_button("ТЁМНЫЙ ЛЕС  ·  18 ЛИСТОВ", true)
 	start.custom_minimum_size = Vector2(310, 58)
-	start.pressed.connect(_start_game)
+	start.pressed.connect(_start_forest)
 	layout.add_child(start)
+	var arena := _menu_button("АРЕНА: ВЫЖИВАНИЕ", false)
+	arena.custom_minimum_size = Vector2(310, 48)
+	arena.pressed.connect(_start_game)
+	layout.add_child(arena)
 	var settings := _menu_button("НАСТРОЙКИ", false)
 	settings.custom_minimum_size = Vector2(310, 52)
 	settings.pressed.connect(_show_settings)
@@ -106,7 +111,7 @@ func _build_ui() -> void:
 	foot_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	layout.add_child(foot_spacer)
 	var footer := Label.new()
-	footer.text = "АКАРИ  ·  ЮНА  ·  МИКА     /     ТРИ СПУТНИЦЫ. ОДНА ПОСЛЕДНЯЯ ЧАСТОТА."
+	footer.text = "18 ЛИСТОВ НА ДЕРЕВЬЯХ. НЕ ТЕРЯЙ НАПАРНИКА В ТУМАНЕ."
 	footer.add_theme_color_override("font_color", Color("e1dbd0", 0.76))
 	footer.add_theme_font_size_override("font_size", 12)
 	layout.add_child(footer)
@@ -259,3 +264,6 @@ func _show_settings() -> void:
 
 func _start_game() -> void:
 	get_tree().change_scene_to_file(GAME_SCENE)
+
+func _start_forest() -> void:
+	get_tree().change_scene_to_file(FOREST_SCENE)

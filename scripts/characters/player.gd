@@ -20,6 +20,7 @@ const FOOTSTEP_SOUND := preload("res://assets/audio/packs/core_sfx/footsteps/con
 @onready var weapon: Node3D = $Head/Camera3D/ViewModel/Rifle
 
 var health := 100.0
+var can_shoot := true
 var magazine := MAG_SIZE
 var reserve_ammo := 180
 var is_reloading := false
@@ -82,7 +83,7 @@ func _physics_process(delta: float) -> void:
 			ammo_changed.emit(magazine, reserve_ammo, false)
 	if Input.is_action_just_pressed("reload"):
 		reload()
-	if Input.is_action_pressed("shoot"):
+	if can_shoot and Input.is_action_pressed("shoot"):
 		shoot()
 
 func _unhandled_input(event: InputEvent) -> void:

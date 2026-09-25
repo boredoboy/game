@@ -2,6 +2,8 @@ extends CharacterBody3D
 
 const SUPPORT_SOUND := preload("res://assets/audio/packs/core_sfx/weapons/rifle_shot.wav")
 @export_range(0, 2) var style_variant := 0
+@export var follow_speed := 5.2
+@export var forest_mode := false
 
 var target_player: Node3D
 var fire_clock := 0.0
@@ -20,12 +22,14 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(target_player):
 		return
 	var follow_offset := Vector3(float(style_variant - 1) * 1.25, 0, 1.45)
+	if forest_mode:
+		follow_offset = Vector3(0.85, 0, 1.8)
 	var desired := target_player.global_position + target_player.global_transform.basis * follow_offset
 	var to_goal := desired - global_position
 	to_goal.y = 0.0
 	if to_goal.length() > 2.1:
-		velocity.x = to_goal.normalized().x * 5.2
-		velocity.z = to_goal.normalized().z * 5.2
+		velocity.x = to_goal.normalized().x * follow_speed
+		velocity.z = to_goal.normalized().z * follow_speed
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, 15.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, 15.0 * delta)

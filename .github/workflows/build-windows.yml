@@ -35,7 +35,12 @@ jobs:
           }
 
       - name: Import project resources
-        run: godot --headless --editor --path "$env:PROJECT_DIR" --quit
+        shell: pwsh
+        run: |
+          $godot = Get-ChildItem -Path (Join-Path $env:USERPROFILE "godot") -Filter "Godot_v*-stable_win64_console.exe" | Select-Object -First 1 -ExpandProperty FullName
+          if (-not $godot) { throw "Could not find the Godot console executable." }
+          & $godot --headless --editor --path "$env:PROJECT_DIR" --quit
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Export Windows executable
         shell: pwsh
@@ -43,8 +48,10 @@ jobs:
           $buildDir = Join-Path $env:PROJECT_DIR "build"
           New-Item -ItemType Directory -Force $buildDir | Out-Null
           $exe = Join-Path $buildDir "DeadRadio.exe"
+          $godot = Get-ChildItem -Path (Join-Path $env:USERPROFILE "godot") -Filter "Godot_v*-stable_win64_console.exe" | Select-Object -First 1 -ExpandProperty FullName
+          if (-not $godot) { throw "Could not find the Godot console executable." }
           Write-Output "Exporting Windows build to $exe"
-          & godot --headless --path "$env:PROJECT_DIR" --export-release "Windows Desktop" $exe
+          & $godot --headless --path "$env:PROJECT_DIR" --export-release "Windows Desktop" $exe
           $godotExitCode = $LASTEXITCODE
           if ($null -ne $godotExitCode -and $godotExitCode -ne 0) { exit $godotExitCode }
           if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) {

@@ -1,0 +1,54 @@
+name: Build Windows game
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Install Godot and export templates
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: true
+
+      - name: Locate project folder
+        shell: pwsh
+        run: |
+          if (Test-Path "project.godot") {
+            "PROJECT_DIR=." >> $env:GITHUB_ENV
+          } elseif (Test-Path "outputs/dead-radio-godot/project.godot") {
+            "PROJECT_DIR=outputs/dead-radio-godot" >> $env:GITHUB_ENV
+          } else {
+            throw "Could not find project.godot at the repository root or outputs/dead-radio-godot."
+          }
+
+      - name: Import project resources
+        run: godot --headless --editor --path "$env:PROJECT_DIR" --quit
+
+      - name: Export Windows executable
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force "$env:PROJECT_DIR/build" | Out-Null
+          godot --headless --path "$env:PROJECT_DIR" --export-release "Windows Desktop" "$env:PROJECT_DIR/build/DeadRadio.exe"
+
+      - name: Upload playable build
+        uses: actions/upload-artifact@v4
+        with:
+          name: DeadRadio-Windows-x86_64
+          path: |
+            build/
+            outputs/dead-radio-godot/build/
+          if-no-files-found: error
+          retention-days: 30

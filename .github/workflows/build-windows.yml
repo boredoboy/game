@@ -22,6 +22,7 @@ jobs:
           version: 4.7.2
           use-dotnet: false
           include-templates: true
+          cache: false
 
       - name: Locate project folder
         shell: pwsh
